@@ -35,7 +35,6 @@ std::vector<Token> Lexer::tokenize() {
         if (isDigit(ch)) { tokens.push_back(readNumber()); continue; }
         if (isLetter(ch)) { tokens.push_back(readWord()); continue; }
         switch (ch) {
-        case '=': tokens.push_back(Token(TokenType::OPERATOR, "=")); pos++; break;
         case '+': tokens.push_back(Token(TokenType::OPERATOR, "+")); pos++; break;
         case '-': tokens.push_back(Token(TokenType::OPERATOR, "-")); pos++; break;
         case '*': tokens.push_back(Token(TokenType::OPERATOR, "*")); pos++; break;
@@ -58,6 +57,25 @@ std::vector<Token> Lexer::tokenize() {
             else {
                 tokens.push_back(Token(TokenType::OPERATOR, ">"));
                 pos++;
+            }
+            break;
+        case '=':
+            if (pos + 1 < input.size() && input[pos + 1] == '=') {
+                tokens.push_back(Token(TokenType::OPERATOR, "=="));
+                pos += 2;
+            }
+            else {
+                tokens.push_back(Token(TokenType::OPERATOR, "="));
+                pos++;
+            }
+            break;
+        case '!':
+            if (pos + 1 < input.size() && input[pos + 1] == '=') {
+                tokens.push_back(Token(TokenType::OPERATOR, "!="));
+                pos += 2;
+            }
+            else {
+                throw runtime_error("Unexpected character '!'");
             }
             break;
         case ';': tokens.push_back(Token(TokenType::PUNCTUATION, ";")); pos++; break;

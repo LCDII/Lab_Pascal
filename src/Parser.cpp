@@ -41,7 +41,7 @@ ExprNode* Parser::parsePrimary() {
 }
 
 int Parser::precedence(const string& op) {
-    if (op == "=") return 1;
+    if (op == "=" || op == "==" || op == "!=") return 1;
     if (op == "<" || op == "<=" || op == ">" || op == ">=") return 2;
     if (op == "+" || op == "-") return 3;
     if (op == "*" || op == "/") return 4;

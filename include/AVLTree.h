@@ -144,6 +144,81 @@ public:
         return nullptr;
     }
 
+    void erase(const K& key) {
+        Node* toDelete = root;
+        while (toDelete) {
+            if (key < toDelete->key)
+                toDelete = toDelete->left;
+            else if (key > to delete->key)
+                toDelete = toDelete->right;
+            else
+                break;
+        }
+        if (!toDelete) return; 
+
+        Node* startBalance = nullptr;
+
+        
+        if (!toDelete->left || !toDelete->right) {
+            Node* child = toDelete->left ? toDelete->left : toDelete->right;
+            if (toDelete->parent) {
+                if (toDelete->parent->left == toDelete)
+                    toDelete->parent->left = child;
+                else
+                    toDelete->parent->right = child;
+                if (child) child->parent = toDelete->parent;
+                startBalance = toDelete->parent;
+            }
+            else {
+                root = child;
+                if (child) child->parent = nullptr;
+                startBalance = root;
+            }
+            delete toDelete;
+        }
+        else {
+            Node* successor = toDelete->right;
+            while (successor->left)
+                successor = successor->left;
+            toDelete->key = successor->key;
+            toDelete->value = successor->value;
+            Node* succChild = successor->right;
+            if (successor->parent) {
+                if (successor->parent->left == successor)
+                    successor->parent->left = succChild;
+                else
+                    successor->parent->right = succChild;
+                if (succChild) succChild->parent = successor->parent;
+                startBalance = successor->parent;
+            }
+            else {
+                root = succChild;
+                if (succChild) succChild->parent = nullptr;
+                startBalance = root;
+            }
+            delete successor;
+        }
+
+        
+        Node* cur = startBalance;
+        while (cur) {
+            Node* newSubRoot = balance(cur);
+            if (newSubRoot != cur) {
+                if (newSubRoot->parent) {
+                    if (newSubRoot->parent->left == cur)
+                        newSubRoot->parent->left = newSubRoot;
+                    else
+                        newSubRoot->parent->right = newSubRoot;
+                }
+                else {
+                    root = newSubRoot;
+                }
+                cur = newSubRoot;
+            }
+            cur = cur->parent;
+        }
+    }
+
     void print(std::ostream& out = std::cout) const {
         if (!root) {
             out << "empty\n";
